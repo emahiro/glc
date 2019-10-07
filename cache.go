@@ -6,6 +6,11 @@ import (
 	"time"
 )
 
+var (
+	// DefaultLocalCacheExpires is 60 seconds
+	DefaultLocalCacheExpires int64 = 60
+)
+
 // Cache is ...
 type Cache interface {
 	Get(key string) []byte
@@ -54,5 +59,8 @@ func (c *LocalCache) Set(key string, src []byte) error {
 
 // NewLocalCache creates a new LocalCache for given a its expires.
 func NewLocalCache(exp int64) Cache {
+	if exp == 0 {
+		exp = DefaultLocalCacheExpires
+	}
 	return &LocalCache{Data: map[string][]byte{}, Expires: exp}
 }
