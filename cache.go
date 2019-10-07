@@ -6,18 +6,20 @@ import (
 	"time"
 )
 
+// Cache is ...
 type Cache interface {
 	Get(key string) []byte
 	Set(key string, src []byte) error
 }
 
+// LocalCache is ...
 type LocalCache struct {
 	Data    map[string][]byte
 	Expires int64
 	m       sync.RWMutex
 }
 
-// Get
+// Get is ...
 func (c *LocalCache) Get(key string) []byte {
 	c.m.RLock()
 	defer c.m.RUnlock()
@@ -33,7 +35,7 @@ func (c *LocalCache) Get(key string) []byte {
 	return nil
 }
 
-// Set
+// Set is ...
 func (c *LocalCache) Set(key string, src []byte) error {
 	c.m.Lock()
 	defer c.m.Unlock()
@@ -50,7 +52,7 @@ func (c *LocalCache) Set(key string, src []byte) error {
 	return nil
 }
 
-// NewLocalCache
+// NewLocalCache creates a new LocalCache for given a its expires.
 func NewLocalCache(exp int64) Cache {
 	return &LocalCache{Data: map[string][]byte{}, Expires: exp}
 }
