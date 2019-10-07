@@ -1,3 +1,3 @@
-module github.com/emahiro/go-local-cache
+module github.com/emahiro/glc
 
 go 1.12
