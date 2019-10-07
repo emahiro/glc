@@ -38,8 +38,12 @@ func (c *LocalCache) Set(key string, src []byte) error {
 	c.m.Lock()
 	defer c.m.Unlock()
 
+	if c.Data == nil {
+		return fmt.Errorf("error: nil map")
+	}
+
 	if len(src) == 0 {
-		return fmt.Errorf("no set data")
+		return fmt.Errorf("error: set no data")
 	}
 
 	c.Data[key] = src
