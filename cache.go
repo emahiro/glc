@@ -58,6 +58,8 @@ func (c *LocalCache) Set(key string, src []byte) error {
 }
 
 // NewLocalCache creates a new LocalCache for given a its expires.
+// If exp is 0, you will use the default cache expiration.
+// The default cache expiration is 60 seconds.
 func NewLocalCache(exp int64) Cache {
 	if exp == 0 {
 		exp = DefaultLocalCacheExpires
