@@ -43,7 +43,7 @@ func (c *LocalCache) Get(key string) []byte {
 // Set is ...
 func (c *LocalCache) Set(key string, src []byte) error {
 	if c.Data == nil {
-		return fmt.Errorf("error: nil map")
+		return fmt.Errorf("error: nil map access")
 	}
 
 	if len(src) == 0 {
