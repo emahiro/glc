@@ -24,7 +24,8 @@ type LocalCache struct {
 	m       sync.RWMutex
 }
 
-// Get is ...
+// Get returns a item or nil.
+// If cache in local is nil or expiration date of the cache you want to retrive is earlier, you can't retrive cache.
 func (c *LocalCache) Get(key string) []byte {
 	c.m.RLock()
 	defer c.m.RUnlock()
