@@ -42,9 +42,6 @@ func (c *LocalCache) Get(key string) []byte {
 
 // Set is ...
 func (c *LocalCache) Set(key string, src []byte) error {
-	c.m.Lock()
-	defer c.m.Unlock()
-
 	if c.Data == nil {
 		return fmt.Errorf("error: nil map")
 	}
@@ -52,6 +49,9 @@ func (c *LocalCache) Set(key string, src []byte) error {
 	if len(src) == 0 {
 		return fmt.Errorf("error: set no data")
 	}
+
+	c.m.Lock()
+	defer c.m.Unlock()
 
 	c.Data[key] = src
 	return nil
