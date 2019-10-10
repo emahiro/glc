@@ -11,13 +11,15 @@ var (
 	DefaultLocalCacheExpires int64 = 60
 )
 
-// Cache is ...
+// Cache is the interface that contains Get and Set method.
+// Get returns cached item as []byte.
+// Set add or replace a new item as []byte with a new key or an exist key.
 type Cache interface {
 	Get(key string) []byte
 	Set(key string, src []byte) error
 }
 
-// LocalCache is ...
+// LocalCache is cache data in local which has expiration date.
 type LocalCache struct {
 	Data    map[string][]byte
 	Expires int64
