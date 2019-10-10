@@ -40,7 +40,7 @@ func (c *LocalCache) Get(key string) []byte {
 	return nil
 }
 
-// Set is ...
+// Set add a new data for cache with a new key or replace an exist key.
 func (c *LocalCache) Set(key string, src []byte) error {
 	if c.Data == nil {
 		return fmt.Errorf("error: nil map access")
