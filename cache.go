@@ -11,7 +11,7 @@ var (
 	DefaultMemoryCacheExpires int64 = 60
 )
 
-// MemoryCache is cache data in local which has expiration date.
+// MemoryCache is cache data in memory which has expiration date.
 type MemoryCache struct {
 	data    map[string][]byte
 	expires int64
