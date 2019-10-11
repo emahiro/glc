@@ -16,17 +16,17 @@ func TestMemoryCache_Get(t *testing.T) {
 	}{
 		{
 			name: "exist cache",
-			fake: &MemoryCache{Data: map[string][]byte{testKey: []byte("hoge")}, Expires: now.Add(60 * time.Second).Unix()},
+			fake: &MemoryCache{data: map[string][]byte{testKey: []byte("hoge")}, expires: now.Add(60 * time.Second).Unix()},
 			want: true,
 		},
 		{
 			name: "cache expired",
-			fake: &MemoryCache{Data: map[string][]byte{testKey: []byte("hoge")}, Expires: now.Add(-60 * time.Second).Unix()},
+			fake: &MemoryCache{data: map[string][]byte{testKey: []byte("hoge")}, expires: now.Add(-60 * time.Second).Unix()},
 			want: false,
 		},
 		{
 			name: "cache not exist",
-			fake: &MemoryCache{Data: nil, Expires: now.Add(-60 * time.Second).Unix()},
+			fake: &MemoryCache{data: nil, expires: now.Add(-60 * time.Second).Unix()},
 			want: false,
 		},
 	}
