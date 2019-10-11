@@ -13,8 +13,8 @@ var (
 
 // MemoryCache is cache data in local which has expiration date.
 type MemoryCache struct {
-	Data    map[string][]byte
-	Expires int64
+	data    map[string][]byte
+	expires int64
 	m       sync.RWMutex
 }
 
@@ -25,11 +25,11 @@ func (c *MemoryCache) Get(key string) []byte {
 	defer c.m.RUnlock()
 
 	now := time.Now().Unix()
-	if c == nil || c.Expires < now {
+	if c == nil || c.expires < now {
 		return nil
 	}
 
-	if data, ok := c.Data[key]; ok && len(data) != 0 {
+	if data, ok := c.data[key]; ok && len(data) != 0 {
 		return data
 	}
 	return nil
@@ -37,7 +37,7 @@ func (c *MemoryCache) Get(key string) []byte {
 
 // Set add a new data for cache with a new key or replace an exist key.
 func (c *MemoryCache) Set(key string, src []byte) error {
-	if c.Data == nil {
+	if c.data == nil {
 		return fmt.Errorf("error: nil map access")
 	}
 
@@ -48,7 +48,7 @@ func (c *MemoryCache) Set(key string, src []byte) error {
 	c.m.Lock()
 	defer c.m.Unlock()
 
-	c.Data[key] = src
+	c.data[key] = src
 	return nil
 }
 
@@ -59,5 +59,5 @@ func NewMemoryCache(exp int64) *MemoryCache {
 	if exp == 0 {
 		exp = DefaultMemoryCacheExpires
 	}
-	return &MemoryCache{Data: map[string][]byte{}, Expires: exp}
+	return &MemoryCache{data: map[string][]byte{}, expires: exp}
 }
