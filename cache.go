@@ -11,14 +11,6 @@ var (
 	DefaultLocalCacheExpires int64 = 60
 )
 
-// Cache is the interface that contains Get and Set method.
-// Get returns cached item as []byte.
-// Set add or replace a new item as []byte with a new key or an exist key.
-type Cache interface {
-	Get(key string) []byte
-	Set(key string, src []byte) error
-}
-
 // LocalCache is cache data in local which has expiration date.
 type LocalCache struct {
 	Data    map[string][]byte
@@ -63,7 +55,7 @@ func (c *LocalCache) Set(key string, src []byte) error {
 // NewLocalCache creates a new LocalCache for given a its expires.
 // If exp is 0, you will use the default cache expiration.
 // The default cache expiration is 60 seconds.
-func NewLocalCache(exp int64) Cache {
+func NewLocalCache(exp int64) *LocalCache {
 	if exp == 0 {
 		exp = DefaultLocalCacheExpires
 	}
