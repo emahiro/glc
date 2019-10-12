@@ -12,7 +12,6 @@
 		// Get
 		data := mc.Get("cacheKey")
 */
-
 package cache
 
 import (
