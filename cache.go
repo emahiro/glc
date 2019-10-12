@@ -6,10 +6,8 @@ import (
 	"time"
 )
 
-var (
-	// DefaultMemoryCacheExpires is 60 seconds
-	DefaultMemoryCacheExpires int64 = 60
-)
+// DefaultMemoryCacheExpires is 60 seconds
+const DefaultMemoryCacheExpires int64 = 60
 
 // MemoryCache is cache data in memory which has expiration date.
 type MemoryCache struct {
