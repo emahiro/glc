@@ -1,16 +1,16 @@
 /*
-	Package cache is provides the local cache which is stored in memoroy or file.
+Package cache is provides the local cache which is stored in memoroy or file.
 
-	Example:
-		mc := NewMemoryCache(cache.DefaultMemoryCacheExpires)
+Example:
+	mc := NewMemoryCache(cache.DefaultMemoryCacheExpires)
 
-		// Set
-		if err := mc.Set("cacheKey", []byte('hoge')); err != nil{
-			log.Fatal(err)
-		}
+	// Set
+	if err := mc.Set("cacheKey", []byte('hoge')); err != nil {
+		log.Fatal(err)
+	}
 
-		// Get
-		data := mc.Get("cacheKey")
+	// Get
+	data := mc.Get("cacheKey")
 */
 package cache
 
