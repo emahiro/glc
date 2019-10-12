@@ -5,7 +5,7 @@ Example:
 	mc := NewMemoryCache(cache.DefaultMemoryCacheExpires)
 
 	// Set
-	if err := mc.Set("cacheKey", []byte('hoge')); err != nil{
+	if err := mc.Set("cacheKey", []byte('hoge')); err != nil {
 		log.Fatal(err)
 	}
 
