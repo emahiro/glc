@@ -21,9 +21,11 @@ import (
 	"time"
 )
 
-// DefaultMemoryCacheExpires is 60 seconds
-const DefaultMemoryCacheExpires = 60
-const fileCacheDir = "tmp"
+const (
+	// DefaultMemoryCacheExpires is 60 seconds
+	DefaultMemoryCacheExpires = 60
+	fileCacheDir              = "tmp"
+)
 
 // MemoryCache is cache data in memory which has expiration date.
 type MemoryCache struct {
