@@ -2,7 +2,7 @@
 Package cache is provides the local cache which is stored in memoroy or file.
 
 Example:
-	mc := NewMemoryCache(cache.DefaultMemoryCacheExpires)
+	mc := NewMemoryCache(time.Now().Add(cache.DefaultMemoryCacheExpires*time.Second))
 
 	// Set
 	if err := mc.Set("cacheKey", []byte('hoge')); err != nil {
@@ -21,7 +21,7 @@ import (
 )
 
 // DefaultMemoryCacheExpires is 60 seconds
-const DefaultMemoryCacheExpires = 60 * time.Second
+const DefaultMemoryCacheExpires = 60
 
 // MemoryCache is cache data in memory which has expiration date.
 type MemoryCache struct {
@@ -64,12 +64,12 @@ func (c *MemoryCache) Set(key string, src []byte) error {
 	return nil
 }
 
-// NewMemoryCache creates a new MemoryCache for given a its expires.
+// NewMemoryCache creates a new MemoryCache for given a its expires as time.Time.
 // If exp is 0, you will use the default cache expiration.
 // The default cache expiration is 60 seconds.
-func NewMemoryCache(exp time.Duration) *MemoryCache {
-	if exp == 0 {
-		exp = DefaultMemoryCacheExpires
+func NewMemoryCache(exp time.Time) *MemoryCache {
+	if exp.IsZero() {
+		exp = time.Now().Add(DefaultMemoryCacheExpires * time.Second)
 	}
-	return &MemoryCache{data: map[string][]byte{}, expires: time.Now().Add(exp).Unix()}
+	return &MemoryCache{data: map[string][]byte{}, expires: exp.Unix()}
 }

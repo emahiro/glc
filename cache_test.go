@@ -55,7 +55,7 @@ func TestMemoryCache_Set(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewMemoryCache(10 * time.Second)
+			c := NewMemoryCache(time.Now().Add(DefaultMemoryCacheExpires * time.Second))
 			err := c.Set(testKey, tt.arg)
 			if (err != nil) != tt.want {
 				t.Fatalf("failed to set cache. err is %v but wantErr is %v", err, tt.want)
