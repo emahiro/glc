@@ -16,18 +16,28 @@ package cache
 
 import (
 	"fmt"
+	"os"
 	"sync"
 	"time"
 )
 
 // DefaultMemoryCacheExpires is 60 seconds
 const DefaultMemoryCacheExpires = 60
+const fileCacheDir = "tmp"
 
 // MemoryCache is cache data in memory which has expiration date.
 type MemoryCache struct {
 	data    map[string][]byte
 	expires int64
 	m       sync.RWMutex
+}
+
+func init() {
+	if _, err := os.Stat(fileCacheDir); os.IsNotExist(err) {
+		if err := os.Mkdir(fileCacheDir, 0777); err != nil {
+			panic(err)
+		}
+	}
 }
 
 // Get returns a item or nil.
