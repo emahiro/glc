@@ -27,6 +27,11 @@ const (
 	fileCacheDir              = "tmp"
 )
 
+var (
+	// UseFileCache is flag whitch control file cache usage
+	UseFileCache = false
+)
+
 // MemoryCache is cache data in memory which has expiration date.
 type MemoryCache struct {
 	data    map[string][]byte
@@ -35,6 +40,10 @@ type MemoryCache struct {
 }
 
 func init() {
+	if !UseFileCache {
+		return
+	}
+
 	if _, err := os.Stat(fileCacheDir); os.IsNotExist(err) {
 		if err := os.Mkdir(fileCacheDir, 0777); err != nil {
 			panic(err)
