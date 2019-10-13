@@ -15,7 +15,7 @@ go get github.com/emahiro/glc
 ## Usage
 
 ```go
-mc := NewMemoryCache(cache.DefaultMemoryCacheExpires*time.Second)
+mc := NewMemoryCache(time.Now().Add(cache.DefaultMemoryCacheExpires*time.Second)
 
 // Set
 if err := mc.Set("cacheKey", []byte('hoge')); err != nil {
