@@ -48,7 +48,7 @@ func init() {
 	}
 
 	if _, err := os.Stat(fileCacheDir); os.IsNotExist(err) {
-		if err := os.Mkdir(fileCacheDir, 0644); err != nil {
+		if err := os.Mkdir(fileCacheDir, os.ModePerm); err != nil {
 			panic(err)
 		}
 	}
@@ -136,7 +136,7 @@ func (c *FileCache) Set(key string, src []byte) error {
 		}
 	}
 
-	if err := ioutil.WriteFile(fp, src, 0644); err != nil {
+	if err := ioutil.WriteFile(fp, src, os.ModePerm); err != nil {
 		return fmt.Errorf("set cache error. err: %v", err)
 	}
 
