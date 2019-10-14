@@ -1,11 +1,28 @@
 package cache
 
 import (
+	"os"
 	"testing"
 	"time"
 )
 
 var testKey = "testKey"
+
+func TestMain(m *testing.M) {
+	if _, err := os.Stat(fileCacheDir); os.IsNotExist(err) {
+		if err := os.Mkdir(fileCacheDir, 0777); err != nil {
+			panic(err)
+		}
+	}
+
+	ret := m.Run()
+
+	if err := os.Remove(fileCacheDir); err != nil {
+		panic(err)
+	}
+
+	os.Exit(ret)
+}
 
 func TestMemoryCache_Get(t *testing.T) {
 	now := time.Now()
