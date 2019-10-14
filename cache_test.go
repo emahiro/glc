@@ -88,6 +88,7 @@ func TestFileCache_Set(t *testing.T) {
 		wantErr bool
 	}{
 		{name: "success to set cache", arg: []byte("hoge"), wantErr: false},
+		{name: "success to overwrite cache", arg: []byte("fuga"), wantErr: false},
 		{name: "failed to set cache for empty data", arg: nil, wantErr: true},
 	}
 
@@ -98,6 +99,11 @@ func TestFileCache_Set(t *testing.T) {
 			err := fc.Set(testKey, tt.arg)
 			if (err != nil) != tt.wantErr {
 				t.Fatalf("failed to set cache. err is %v but wantErr is %v", err, tt.wantErr)
+			}
+
+			got := fc.Get(testKey)
+			if tt.arg != nil && string(got) != string(tt.arg) {
+				t.Fatalf("failed to set or overwrite cache. got is %v but set is %v", string(got), string(tt.arg))
 			}
 		})
 	}
