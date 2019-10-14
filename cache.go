@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"sync"
 	"time"
 )
@@ -106,7 +107,7 @@ func (c *FileCache) Get(key string) []byte {
 	c.m.RLock()
 	defer c.m.RUnlock()
 
-	fp := fmt.Sprintf("./%s/%s.cache", fileCacheDir, key)
+	fp := filepath.Join(".", fileCacheDir, fmt.Sprintf("%s.cache", key))
 	b, err := ioutil.ReadFile(fp)
 	if err != nil {
 		return nil
@@ -123,7 +124,7 @@ func (c *FileCache) Set(key string, src []byte) error {
 		return fmt.Errorf("error: set no data")
 	}
 
-	fp := fmt.Sprintf("./%s/%s.cache", fileCacheDir, key)
+	fp := filepath.Join(".", fileCacheDir, fmt.Sprintf("%s.cache", key))
 	if _, err := os.Stat(fp); os.IsNotExist(err) {
 		if _, err := os.Create(fp); err != nil {
 			return fmt.Errorf("set cache error. err:%v", err)

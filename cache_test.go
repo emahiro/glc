@@ -17,7 +17,7 @@ func TestMain(m *testing.M) {
 
 	ret := m.Run()
 
-	if err := os.Remove(fileCacheDir); err != nil {
+	if err := os.RemoveAll(fileCacheDir); err != nil {
 		panic(err)
 	}
 
@@ -76,6 +76,28 @@ func TestMemoryCache_Set(t *testing.T) {
 			err := c.Set(testKey, tt.arg)
 			if (err != nil) != tt.want {
 				t.Fatalf("failed to set cache. err is %v but wantErr is %v", err, tt.want)
+			}
+		})
+	}
+}
+
+func TestFileCache_Set(t *testing.T) {
+	tests := []struct {
+		name    string
+		arg     []byte
+		wantErr bool
+	}{
+		{name: "success to set cache", arg: []byte("hoge"), wantErr: false},
+		{name: "failed to set cache for empty data", arg: nil, wantErr: true},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			fc := &FileCache{}
+			err := fc.Set(testKey, tt.arg)
+			if (err != nil) != tt.wantErr {
+				t.Fatalf("failed to set cache. err is %v but wantErr is %v", err, tt.wantErr)
 			}
 		})
 	}
