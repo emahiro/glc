@@ -14,6 +14,8 @@ go get github.com/emahiro/glc
 
 ## Usage
 
+### in memory cache
+
 ```go
 mc := NewMemoryCache(time.Now().Add(cache.DefaultMemoryCacheExpires*time.Second)
 
@@ -25,6 +27,12 @@ if err := mc.Set("cacheKey", []byte('hoge')); err != nil {
 // Get
 data := mc.Get("cacheKey")
 ```
+
+### file cache
+
+Usage is similar to in memory cache.
+
+※ sGo Local Cache creates `tmp` directory for file cache, when you provide UseFileCache true.
 
 ## LICENSE
 
