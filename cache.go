@@ -97,12 +97,13 @@ func NewMemoryCache(exp time.Time) *MemoryCache {
 	return &MemoryCache{data: map[string][]byte{}, expires: exp.Unix()}
 }
 
-// FileCache is
+// FileCache is cache data in local file.
 type FileCache struct {
 	m sync.RWMutex
 }
 
-// Get returns ...
+// Get returns a data or nil.
+// If cache in local file is nil or you set key that does not hit the cache, you can not retrive cache.
 func (c *FileCache) Get(key string) []byte {
 	c.m.RLock()
 	defer c.m.RUnlock()
@@ -116,7 +117,9 @@ func (c *FileCache) Get(key string) []byte {
 	return b
 }
 
-// Set is ...
+// Set create a new file which is witten data as []byte.
+// When you set a new cache data, create a `{{ $key }}.cache` file,
+// and if cache file is exist, overwrite it.
 func (c *FileCache) Set(key string, src []byte) error {
 	if len(src) == 0 {
 		return fmt.Errorf("error: set no data")
