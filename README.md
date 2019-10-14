@@ -30,9 +30,9 @@ data := mc.Get("cacheKey")
 
 ### file cache
 
-Usage is similar to in memory cache.
-
-※ sGo Local Cache creates `tmp` directory for file cache, when you provide UseFileCache true.
+Usage is similar to in memory cache.  
+Go Local Cache creates `tmp` directory for file cache, when you provide UseFileCache true.
+If you use file cache without setting UseFileCache true, handle error due to missing `tmp` directory.
 
 ## LICENSE
 
