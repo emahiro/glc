@@ -118,11 +118,12 @@ func (c *FileCache) Get(key string) []byte {
 
 // Set is ...
 func (c *FileCache) Set(key string, src []byte) error {
-	c.m.Lock()
-
 	if len(src) == 0 {
 		return fmt.Errorf("error: set no data")
 	}
+
+	c.m.Lock()
+	defer c.m.Unlock()
 
 	fp := filepath.Join(".", fileCacheDir, fmt.Sprintf("%s.cache", key))
 	if _, err := os.Stat(fp); os.IsNotExist(err) {
