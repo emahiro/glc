@@ -102,3 +102,28 @@ func TestFileCache_Set(t *testing.T) {
 		})
 	}
 }
+
+func TestFileCache_Get(t *testing.T) {
+	tests := []struct {
+		name string
+		key  string
+		want []byte
+	}{
+		{name: "success to get cache", key: testKey, want: []byte("hoge")},
+	}
+
+	fc := &FileCache{}
+	if err := fc.Set(testKey, []byte("hoge")); err != nil {
+		t.Fatalf("err: %v", err)
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			got := fc.Get(tt.key)
+			if string(got) != string(tt.want) {
+				t.Fatalf("want is %v but got is %v", tt.want, got)
+			}
+		})
+	}
+}
