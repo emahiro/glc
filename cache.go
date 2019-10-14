@@ -1,5 +1,6 @@
 /*
 Package cache is provides the local cache which is stored in memoroy or file.
+This package is create `tmp` directory for file cache, when you provide UseFileCache true.
 
 Example:
 	mc := NewMemoryCache(time.Now().Add(cache.DefaultMemoryCacheExpires*time.Second))
