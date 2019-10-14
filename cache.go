@@ -16,6 +16,7 @@ package cache
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"sync"
 	"time"
@@ -93,4 +94,45 @@ func NewMemoryCache(exp time.Time) *MemoryCache {
 		exp = time.Now().Add(DefaultMemoryCacheExpires * time.Second)
 	}
 	return &MemoryCache{data: map[string][]byte{}, expires: exp.Unix()}
+}
+
+// FileCache is
+type FileCache struct {
+	m sync.RWMutex
+}
+
+// Get returns ...
+func (c *FileCache) Get(key string) []byte {
+	c.m.RLock()
+	defer c.m.RUnlock()
+
+	fp := fmt.Sprintf("./%s/%s.cache", fileCacheDir, key)
+	b, err := ioutil.ReadFile(fp)
+	if err != nil {
+		return nil
+	}
+
+	return b
+}
+
+// Set is ...
+func (c *FileCache) Set(key string, src []byte) error {
+	c.m.Lock()
+
+	if len(src) == 0 {
+		return fmt.Errorf("error: set no data")
+	}
+
+	fp := fmt.Sprintf("./%s/%s.cache", fileCacheDir, key)
+	if _, err := os.Stat(fp); os.IsNotExist(err) {
+		if _, err := os.Create(fp); err != nil {
+			return fmt.Errorf("set cache error. err:%v", err)
+		}
+	}
+
+	if err := ioutil.WriteFile(fp, src, 0777); err != nil {
+		return fmt.Errorf("set cache error. err: %v", err)
+	}
+
+	return nil
 }
