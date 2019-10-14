@@ -110,6 +110,7 @@ func TestFileCache_Get(t *testing.T) {
 		want []byte
 	}{
 		{name: "success to get cache", key: testKey, want: []byte("hoge")},
+		{name: "failed to get cache for invalid key", key: "hoge", want: nil},
 	}
 
 	fc := &FileCache{}
