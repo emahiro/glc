@@ -10,7 +10,7 @@ var testKey = "testKey"
 
 func TestMain(m *testing.M) {
 	if _, err := os.Stat(fileCacheDir); os.IsNotExist(err) {
-		if err := os.Mkdir(fileCacheDir, 0777); err != nil {
+		if err := os.Mkdir(fileCacheDir, 0644); err != nil {
 			panic(err)
 		}
 	}
