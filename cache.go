@@ -3,7 +3,7 @@ Package cache is provides the local cache which is stored in memoroy or file.
 This package creates `tmp` directory for file cache, when you provide UseFileCache true.
 
 Example:
-	mc := NewMemoryCache(time.Now().Add(cache.DefaultMemoryCacheExpires*time.Second))
+	mc := NewMemoryCache(cache.DefaultMemoryCacheExpires)
 
 	// Set
 	if err := mc.Set("cacheKey", []byte('hoge')); err != nil {
@@ -26,7 +26,7 @@ import (
 
 const (
 	// DefaultMemoryCacheExpires is 60 seconds
-	DefaultMemoryCacheExpires = 60
+	DefaultMemoryCacheExpires = 60 * time.Second
 	fileCacheDir              = "tmp"
 )
 
@@ -35,11 +35,17 @@ var (
 	UseFileCache = false
 )
 
-// MemoryCache is cache data in memory which has expiration date.
+// MemoryCache is cache data in memory which has duration.
 type MemoryCache struct {
-	data    map[string][]byte
-	expires int64
-	m       sync.RWMutex
+	item map[string]*Item
+	d    time.Duration
+	m    sync.RWMutex
+}
+
+// Item has cache item and expiration field.
+type Item struct {
+	data []byte
+	exp  int64
 }
 
 func init() {
@@ -60,20 +66,20 @@ func (c *MemoryCache) Get(key string) []byte {
 	c.m.RLock()
 	defer c.m.RUnlock()
 
-	now := time.Now().Unix()
-	if c == nil || c.expires < now {
+	item, ok := c.item[key]
+	if !ok || item == nil {
+		return nil
+	}
+	if len(item.data) == 0 || item.exp < time.Now().UnixNano() {
 		return nil
 	}
 
-	if data, ok := c.data[key]; ok && len(data) != 0 {
-		return data
-	}
-	return nil
+	return item.data
 }
 
 // Set add a new data for cache with a new key or replace an exist key.
 func (c *MemoryCache) Set(key string, src []byte) error {
-	if c.data == nil {
+	if c.item == nil {
 		return fmt.Errorf("error: nil map access")
 	}
 
@@ -84,18 +90,16 @@ func (c *MemoryCache) Set(key string, src []byte) error {
 	c.m.Lock()
 	defer c.m.Unlock()
 
-	c.data[key] = src
+	c.item[key] = &Item{
+		data: src,
+		exp:  time.Now().Add(c.d).UnixNano(),
+	}
 	return nil
 }
 
-// NewMemoryCache creates a new MemoryCache for given a its expires as time.Time.
-// If exp is 0, you will use the default cache expiration.
-// The default cache expiration is 60 seconds.
-func NewMemoryCache(exp time.Time) *MemoryCache {
-	if exp.IsZero() {
-		exp = time.Now().Add(DefaultMemoryCacheExpires * time.Second)
-	}
-	return &MemoryCache{data: map[string][]byte{}, expires: exp.Unix()}
+// NewMemoryCache creates a new MemoryCache for given a its expires as time.Duration.
+func NewMemoryCache(d time.Duration) *MemoryCache {
+	return &MemoryCache{item: make(map[string]*Item), d: d}
 }
 
 // FileCache is cache data in local file.

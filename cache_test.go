@@ -33,17 +33,38 @@ func TestMemoryCache_Get(t *testing.T) {
 	}{
 		{
 			name: "exist cache",
-			fake: &MemoryCache{data: map[string][]byte{testKey: []byte("hoge")}, expires: now.Add(60 * time.Second).Unix()},
+			fake: &MemoryCache{
+				item: map[string]*Item{
+					testKey: &Item{
+						data: []byte("hoge"),
+						exp:  now.Add(DefaultMemoryCacheExpires).UnixNano(),
+					},
+				},
+			},
 			want: true,
 		},
 		{
 			name: "cache expired",
-			fake: &MemoryCache{data: map[string][]byte{testKey: []byte("hoge")}, expires: now.Add(-60 * time.Second).Unix()},
+			fake: &MemoryCache{
+				item: map[string]*Item{
+					testKey: &Item{
+						data: []byte("hoge"),
+						exp:  now.Add(-1 * time.Nanosecond).UnixNano(),
+					},
+				},
+			},
 			want: false,
 		},
 		{
 			name: "cache not exist",
-			fake: &MemoryCache{data: nil, expires: now.Add(-60 * time.Second).Unix()},
+			fake: &MemoryCache{
+				item: map[string]*Item{
+					testKey: &Item{
+						data: nil,
+						exp:  now.Add(DefaultMemoryCacheExpires).UnixNano(),
+					},
+				},
+			},
 			want: false,
 		},
 	}
@@ -72,7 +93,7 @@ func TestMemoryCache_Set(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewMemoryCache(time.Now().Add(DefaultMemoryCacheExpires * time.Second))
+			c := NewMemoryCache(DefaultMemoryCacheExpires)
 			err := c.Set(testKey, tt.arg)
 			if (err != nil) != tt.want {
 				t.Fatalf("failed to set cache. err is %v but wantErr is %v", err, tt.want)
