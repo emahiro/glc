@@ -3,7 +3,7 @@ Package cache is provides the local cache which is stored in memoroy or file.
 This package creates `tmp` directory for file cache, when you provide UseFileCache true.
 
 Example:
-	mc := NewMemoryCache(time.Now().Add(cache.DefaultMemoryCacheExpires*time.Second))
+	mc := NewMemoryCache(cache.DefaultMemoryCacheExpires)
 
 	// Set
 	if err := mc.Set("cacheKey", []byte('hoge')); err != nil {
@@ -42,7 +42,7 @@ type MemoryCache struct {
 	m    sync.RWMutex
 }
 
-// Item has cache item and expiration.
+// Item has cache item and expiration field.
 type Item struct {
 	data []byte
 	exp  int64
@@ -97,9 +97,7 @@ func (c *MemoryCache) Set(key string, src []byte) error {
 	return nil
 }
 
-// NewMemoryCache creates a new MemoryCache for given a its expires as time.Time.
-// If exp is 0, you will use the default cache expiration.
-// The default cache expiration is 60 seconds.
+// NewMemoryCache creates a new MemoryCache for given a its expires as time.Duration.
 func NewMemoryCache(d time.Duration) *MemoryCache {
 	return &MemoryCache{item: make(map[string]*Item), d: d}
 }
