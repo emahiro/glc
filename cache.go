@@ -44,7 +44,7 @@ type Item struct {
 }
 
 // Get returns a item or nil.
-// If cache in local is nil or expiration date of the cache you want to retrive is earlier, you can't retrive cache.
+// If cache in local is nil or expiration date of the cache is earlier, this returns nil.
 func (c *MemoryCache) Get(key string) []byte {
 	c.m.RLock()
 	defer c.m.RUnlock()
@@ -92,7 +92,7 @@ type FileCache struct {
 }
 
 // Get returns a data or nil.
-// If cache in local file is nil or you set key that does not hit the cache, you can not retrive cache.
+// If cache in local file is nil or is not setted key, this returns nil.
 func (c *FileCache) Get(key string) []byte {
 	c.m.RLock()
 	defer c.m.RUnlock()
@@ -107,8 +107,8 @@ func (c *FileCache) Get(key string) []byte {
 }
 
 // Set create a new file which is witten data as []byte.
-// When you set a new cache data, create a `{{ $key }}.cache` file,
-// and if cache file is exist, overwrite it.
+// When it sets a new cache data, create a `{{ $key }}.cache` file,
+// and overwrite it if cache file is exist.
 func (c *FileCache) Set(key string, src []byte) error {
 	if len(src) == 0 {
 		return fmt.Errorf("error: set no data")
