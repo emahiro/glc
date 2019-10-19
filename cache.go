@@ -125,7 +125,8 @@ func (c *FileCache) Set(key string, src []byte) error {
 	return nil
 }
 
-// NewFileCache is ...
+// NewFileCache returns FileCache pointer.
+// If there is no temp directory named prefix, create temp directory for storing cache.
 func NewFileCache(prefix string) (*FileCache, error) {
 	path, err := ioutil.TempDir("", prefix)
 	if err != nil {
