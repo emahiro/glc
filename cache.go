@@ -1,6 +1,6 @@
 /*
-Package cache is provides the local cache which is stored in memoroy or file.
-This package creates `tmp` directory for file cache, when you provide UseFileCache true.
+Package glc is provides the local cache which is stored in memoroy or file.
+This package creates `tmp` directory in case of using file cache.
 
 Example:
 	mc := glc.NewMemoryCache(glc.DefaultMemoryCacheExpires)
