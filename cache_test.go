@@ -105,7 +105,8 @@ func TestFileCache_Set(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			fc := &FileCache{}
+			fc, _ := NewFileCache("testPrefix")
+			defer os.RemoveAll(fc.path)
 			err := fc.Set(testKey, tt.arg)
 			if (err != nil) != tt.wantErr {
 				t.Fatalf("failed to set cache. err is %v but wantErr is %v", err, tt.wantErr)
@@ -129,7 +130,8 @@ func TestFileCache_Get(t *testing.T) {
 		{name: "failed to get cache for invalid key", key: "hoge", want: nil},
 	}
 
-	fc := &FileCache{}
+	fc, _ := NewFileCache("testPrefix")
+	defer os.RemoveAll(fc.path)
 	if err := fc.Set(testKey, []byte("hoge")); err != nil {
 		t.Fatalf("err: %v", err)
 	}

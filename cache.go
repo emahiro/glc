@@ -97,7 +97,7 @@ func (c *FileCache) Get(key string) []byte {
 	c.m.RLock()
 	defer c.m.RUnlock()
 
-	fp := filepath.Join(".", fileCacheDir, fmt.Sprintf("%s.cache", key))
+	fp := filepath.Join(c.path, key) + ".cache"
 	b, err := ioutil.ReadFile(fp)
 	if err != nil {
 		return nil
@@ -117,13 +117,7 @@ func (c *FileCache) Set(key string, src []byte) error {
 	c.m.Lock()
 	defer c.m.Unlock()
 
-	fp := filepath.Join(".", fileCacheDir, fmt.Sprintf("%s.cache", key))
-	if _, err := os.Stat(fp); os.IsNotExist(err) {
-		if _, err := os.Create(fp); err != nil {
-			return fmt.Errorf("set cache error. err:%v", err)
-		}
-	}
-
+	fp := filepath.Join(c.path, key) + ".cache"
 	if err := ioutil.WriteFile(fp, src, os.ModePerm); err != nil {
 		return fmt.Errorf("set cache error. err: %v", err)
 	}
