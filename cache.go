@@ -104,7 +104,8 @@ func NewMemoryCache(d time.Duration) *MemoryCache {
 
 // FileCache is cache data in local file.
 type FileCache struct {
-	m sync.RWMutex
+	path string
+	m    sync.RWMutex
 }
 
 // Get returns a data or nil.
@@ -145,4 +146,14 @@ func (c *FileCache) Set(key string, src []byte) error {
 	}
 
 	return nil
+}
+
+// NewFileCache is ...
+func NewFileCache(key string) (*FileCache, error) {
+	path, err := ioutil.TempDir("", key)
+	if err != nil {
+		return nil, err
+	}
+
+	return &FileCache{path: path}, nil
 }
