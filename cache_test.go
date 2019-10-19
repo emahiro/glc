@@ -9,18 +9,7 @@ import (
 var testKey = "testKey"
 
 func TestMain(m *testing.M) {
-	if _, err := os.Stat(fileCacheDir); os.IsNotExist(err) {
-		if err := os.Mkdir(fileCacheDir, os.ModePerm); err != nil {
-			panic(err)
-		}
-	}
-
 	ret := m.Run()
-
-	if err := os.RemoveAll(fileCacheDir); err != nil {
-		panic(err)
-	}
-
 	os.Exit(ret)
 }
 
@@ -116,8 +105,10 @@ func TestFileCache_Set(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			fc := &FileCache{}
+			fc, _ := NewFileCache("testPrefix")
+			defer os.RemoveAll(fc.path)
 			err := fc.Set(testKey, tt.arg)
+
 			if (err != nil) != tt.wantErr {
 				t.Fatalf("failed to set cache. err is %v but wantErr is %v", err, tt.wantErr)
 			}
@@ -137,10 +128,12 @@ func TestFileCache_Get(t *testing.T) {
 		want []byte
 	}{
 		{name: "success to get cache", key: testKey, want: []byte("hoge")},
-		{name: "failed to get cache for invalid key", key: "hoge", want: nil},
+		{name: "failed to get cache for key missing", key: "hoge", want: nil},
 	}
 
-	fc := &FileCache{}
+	fc, _ := NewFileCache("testPrefix")
+	defer os.RemoveAll(fc.path)
+
 	if err := fc.Set(testKey, []byte("hoge")); err != nil {
 		t.Fatalf("err: %v", err)
 	}

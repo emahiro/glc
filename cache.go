@@ -30,11 +30,6 @@ const (
 	fileCacheDir              = "tmp"
 )
 
-var (
-	// UseFileCache is flag whitch control file cache usage
-	UseFileCache = false
-)
-
 // MemoryCache is cache data in memory which has duration.
 type MemoryCache struct {
 	item map[string]*Item
@@ -46,18 +41,6 @@ type MemoryCache struct {
 type Item struct {
 	data []byte
 	exp  int64
-}
-
-func init() {
-	if !UseFileCache {
-		return
-	}
-
-	if _, err := os.Stat(fileCacheDir); os.IsNotExist(err) {
-		if err := os.Mkdir(fileCacheDir, os.ModePerm); err != nil {
-			panic(err)
-		}
-	}
 }
 
 // Get returns a item or nil.
@@ -104,7 +87,8 @@ func NewMemoryCache(d time.Duration) *MemoryCache {
 
 // FileCache is cache data in local file.
 type FileCache struct {
-	m sync.RWMutex
+	path string
+	m    sync.RWMutex
 }
 
 // Get returns a data or nil.
@@ -113,7 +97,7 @@ func (c *FileCache) Get(key string) []byte {
 	c.m.RLock()
 	defer c.m.RUnlock()
 
-	fp := filepath.Join(".", fileCacheDir, fmt.Sprintf("%s.cache", key))
+	fp := filepath.Join(c.path, key) + ".cache"
 	b, err := ioutil.ReadFile(fp)
 	if err != nil {
 		return nil
@@ -133,16 +117,21 @@ func (c *FileCache) Set(key string, src []byte) error {
 	c.m.Lock()
 	defer c.m.Unlock()
 
-	fp := filepath.Join(".", fileCacheDir, fmt.Sprintf("%s.cache", key))
-	if _, err := os.Stat(fp); os.IsNotExist(err) {
-		if _, err := os.Create(fp); err != nil {
-			return fmt.Errorf("set cache error. err:%v", err)
-		}
-	}
-
+	fp := filepath.Join(c.path, key) + ".cache"
 	if err := ioutil.WriteFile(fp, src, os.ModePerm); err != nil {
 		return fmt.Errorf("set cache error. err: %v", err)
 	}
 
 	return nil
+}
+
+// NewFileCache returns FileCache pointer.
+// If there is no temp directory named prefix, create temp directory for storing cache.
+func NewFileCache(prefix string) (*FileCache, error) {
+	path, err := ioutil.TempDir("", prefix)
+	if err != nil {
+		return nil, err
+	}
+
+	return &FileCache{path: path}, nil
 }
