@@ -132,8 +132,8 @@ func (c *FileCache) Set(key string, src []byte) error {
 }
 
 // NewFileCache is ...
-func NewFileCache(key string) (*FileCache, error) {
-	path, err := ioutil.TempDir("", key)
+func NewFileCache(prefix string) (*FileCache, error) {
+	path, err := ioutil.TempDir("", prefix)
 	if err != nil {
 		return nil, err
 	}
